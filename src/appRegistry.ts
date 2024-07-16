@@ -1,3 +1,3 @@
-export class appRegistry {
+export class AppRegistry {
 
 }

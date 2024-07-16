@@ -1,2 +1,2 @@
-export {bps} from "./bps";
-export {appRegistry} from "./appRegistry";
+export {BPS} from "./bps";
+export {AppRegistry} from "./appRegistry";
