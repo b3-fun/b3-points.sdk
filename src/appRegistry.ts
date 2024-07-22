@@ -1,13 +1,13 @@
-import { Contract, ContractInterface, providers } from "ethers";
+import { Contract, ContractRunner } from "ethers";
 import { getGatewayResponse } from "./utils";
+import { AppRegistryABI } from "./contracts/AppRegistryABI";
 
 export class AppRegistry {
   private appRegistryContractAddress: string
   private appRegistryContract: Contract
-  private appRegistryContractABI: ContractInterface
 
-  constructor(provider: providers.BaseProvider) {
-    this.appRegistryContract = new Contract(this.appRegistryContractAddress, this.appRegistryContractABI, provider)
+  constructor(runner: ContractRunner) {
+    this.appRegistryContract = new Contract(this.appRegistryContractAddress, AppRegistryABI, runner)
   }
 
 

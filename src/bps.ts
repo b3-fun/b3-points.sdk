@@ -1,39 +1,39 @@
-import {Contract, ContractInterface, providers, Signer} from "ethers";
+import {Contract} from "ethers";
 import { getUserPointsGraphCall } from "./services/indexer";
-
-type Requests = {recipient: string, points: number}[]
+import { GrantRequest, TransferRequest } from "./types";
+import { BPSContractABI } from "./contracts/BPS_ABI";
+import { ContractRunner } from "ethers";
 
 export class BPS {
   private bpsContractAddress: string
   private bpsContract: Contract
-  private bpsContractABI: ContractInterface
 
   constructor(address: string) {
     this.bpsContractAddress = address;
   }
 
-  public connect(provider: providers.BaseProvider) {
-    this.bpsContract = new Contract(this.bpsContractAddress, this.bpsContractABI, provider);
+  public connect(runner: ContractRunner) {
+    this.bpsContract = new Contract(this.bpsContractAddress, BPSContractABI, runner);
   }
 
-  public async grantPoints(requests: Requests, signer: Signer) {
-    return await this.bpsContract.grantPoints(requests, signer)
+  public async grantPoints(requests: GrantRequest[]) {
+    return await this.bpsContract.grantPoints(requests)
   }
 
-  public async transferPoints(appId: number, requests: Requests, signer: Signer) {
-    return await this.bpsContract.grantPoints(appId, requests, signer)
+  public async transferPoints(appId: number, requests: TransferRequest[]) {
+    return await this.bpsContract.transferPoints(appId, requests)
   }
 
-  public async cancelTransfer() {
-    return await this.bpsContract.cancelTransfer()
+  public async cancelTransfer(uid: number) {
+    return await this.bpsContract.cancelTransfer(uid)
   }
 
-  public async getAppTotalPoints() {
-    return await this.bpsContract.getAppTotalPoints()
+  public async getAppTotalPoints(session: number, appId: number) {
+    return await this.bpsContract.getTotalPoint(session, appId)
   }
 
-  public async getAppAvailablePoints() {
-    return await this.bpsContract.getAppAvailablePoints()
+  public async getAppAvailablePoints(session: number, appId: number) {
+    return await this.bpsContract.getAvailablePoint(session, appId)
   }
 
   public async getUserPoints() {
