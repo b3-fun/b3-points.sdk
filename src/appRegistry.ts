@@ -1,24 +1,32 @@
-import { Contract, ContractRunner } from "ethers";
-import { getGatewayResponse } from "./utils";
+import type { Signer } from "ethers";
+import { Contract } from "ethers";
+
+import { B3SepoliaAppRegistryContractAddress } from "./constants";
 import { AppRegistryABI } from "./contracts/AppRegistryABI";
+import { lookupENSName } from "./utils";
 
 export class AppRegistry {
-  private appRegistryContractAddress: string
-  private appRegistryContract: Contract
+  private appRegistryContract: Contract;
 
-  constructor(runner: ContractRunner) {
-    this.appRegistryContract = new Contract(this.appRegistryContractAddress, AppRegistryABI, runner)
+  constructor(signer: Signer) {
+    this.appRegistryContract = new Contract(
+      B3SepoliaAppRegistryContractAddress,
+      AppRegistryABI,
+      signer,
+    );
   }
 
-
-  public async grantPoints(appName: string, operator: string, gatewayName: string) {
-
-    const gatewayResponse = await getGatewayResponse(gatewayName);
+  public async grantPoints(
+    appName: string,
+    operator: string,
+    gatewayName: string,
+  ): Promise<number> {
+    const ccipGatewayResp = await lookupENSName(gatewayName);
 
     return await this.appRegistryContract.register({
       appName,
       operator,
-      gatewayResponse
-      })
+      ccipGatewayResp,
+    });
   }
 }
