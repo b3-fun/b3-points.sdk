@@ -4,6 +4,6 @@ export type GrantRequest = {
 };
 
 export type TransferRequest = {
-  recipientAddress: string;
+  recipient: string;
   point: number;
 };

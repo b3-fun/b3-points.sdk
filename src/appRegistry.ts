@@ -16,7 +16,7 @@ export class AppRegistry {
     );
   }
 
-  public async grantPoints(
+  public async register(
     appName: string,
     operator: string,
     gatewayName: string,
