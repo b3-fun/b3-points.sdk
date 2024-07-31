@@ -1,32 +1,50 @@
-import type { Signer } from "ethers";
-import { Contract } from "ethers";
+import type {
+  Chain,
+  EIP1193Provider,
+  GetContractReturnType,
+  Hex,
+  WalletClient,
+  WriteContractReturnType,
+} from "viem";
+import { createWalletClient, custom, getContract } from "viem";
 
 import { B3SepoliaAppRegistryContractAddress } from "./constants";
 import { AppRegistryABI } from "./contracts/AppRegistryABI";
 import { lookupENSName } from "./utils";
 
 export class AppRegistry {
-  private appRegistryContract: Contract;
+  private appRegistryContract: GetContractReturnType<
+    typeof AppRegistryABI,
+    WalletClient
+  >;
+  private chain: Chain;
 
-  constructor(signer: Signer) {
-    this.appRegistryContract = new Contract(
-      B3SepoliaAppRegistryContractAddress,
-      AppRegistryABI,
-      signer,
-    );
+  constructor(provider: EIP1193Provider, chain: Chain) {
+    this.chain = chain;
+
+    const client = createWalletClient({
+      chain: chain,
+      transport: custom(provider),
+    });
+
+    this.appRegistryContract = getContract({
+      address: B3SepoliaAppRegistryContractAddress,
+      abi: AppRegistryABI,
+      client,
+    });
   }
 
   public async register(
-    appName: string,
-    operator: string,
+    appName: `0x${string}`,
+    operator: `0x${string}`,
     gatewayName: string,
-  ): Promise<number> {
+    account: Hex,
+  ): Promise<WriteContractReturnType> {
     const ccipGatewayResp = await lookupENSName(gatewayName);
 
-    return await this.appRegistryContract.register({
-      appName,
-      operator,
-      ccipGatewayResp,
-    });
+    return await this.appRegistryContract.write.register(
+      [appName, operator, ccipGatewayResp],
+      { account, chain: this.chain },
+    );
   }
 }

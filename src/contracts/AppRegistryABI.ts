@@ -387,4 +387,4 @@ export const AppRegistryABI = [
       },
     ],
   },
-];
+] as const;

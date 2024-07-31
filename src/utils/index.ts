@@ -7,6 +7,9 @@ import {
   SepoliaENSResolverAddress,
 } from "../constants";
 
+/* eslint-disable  @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable  @typescript-eslint/no-require-imports */
+/* eslint-disable  @typescript-eslint/no-var-requires */
 const dnsPacket = require("dns-packet");
 
 const IAddrResolverABI = parseAbi([
@@ -17,9 +20,11 @@ const OffchainResolverABI = parseAbi([
   "function resolve(bytes calldata name, bytes calldata data) external view returns (bytes memory)",
 ]);
 
-export const lookupENSName = async (name: string): Promise<string> => {
+export const lookupENSName = async (name: string): Promise<`0x${string}`> => {
   console.log("Lookup ENS name: ", name);
   // Encode app ENS name to get dns name and node
+  /* eslint-disable  @typescript-eslint/no-unsafe-call */
+  /* eslint-disable  @typescript-eslint/no-unsafe-member-access */
   const dnsName: `0x${string}` = `0x${dnsPacket.name.encode(name).toString("hex")}`;
   const ensNode = namehash(name);
   console.log("dnsName", dnsName);
@@ -47,5 +52,6 @@ export const lookupENSName = async (name: string): Promise<string> => {
     throw new Error(`HTTP error! status: ${resp.status}`);
   }
   const respBody = await resp.json();
+  /* eslint-disable  @typescript-eslint/no-unsafe-return */
   return respBody.data;
 };

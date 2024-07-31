@@ -1,1 +1,1 @@
-export function getUserPointsGraphCall() {}
+export async function getUserPointsGraphCall(): Promise<void> {}
