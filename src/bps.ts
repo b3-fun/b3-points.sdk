@@ -1,44 +1,49 @@
-import { Contract } from "ethers";
-import type { ContractRunner } from "ethers";
-
 import { BPSContractABI } from "./contracts/BPS_ABI";
 import { getUserPointsGraphCall } from "./services/indexer";
 import type { GrantRequest, TransferRequest } from "./types";
+import { Chain, createWalletClient, custom, EIP1193Provider, getContract, GetContractReturnType, Hex, WalletClient, WriteContractReturnType } from "viem";
 
 export class BPS {
-  private bpsContractAddress: string;
-  private bpsContract: Contract;
+  private bpsContractAddress: Hex;
+  private bpsContract: GetContractReturnType<typeof BPSContractABI, WalletClient>
+  private chain: Chain
 
-  constructor(address: string) {
+  constructor(address: Hex, chain: Chain) {
     this.bpsContractAddress = address;
+    this.chain = chain
   }
 
-  public connect(runner: ContractRunner) {
-    this.bpsContract = new Contract(
-      this.bpsContractAddress,
-      BPSContractABI,
-      runner,
-    );
+  public connect(provider: EIP1193Provider) {
+    const client = createWalletClient({
+      chain: this.chain,
+      transport: custom(provider)
+    })
+
+    this.bpsContract = getContract({
+      address: this.bpsContractAddress,
+      abi: BPSContractABI,
+      client
+    })
   }
 
-  public async grantPoints(requests: GrantRequest[]) {
-    return await this.bpsContract.grantPoints(requests);
+  public async grantPoints(requests: readonly GrantRequest[], account: Hex): Promise<WriteContractReturnType> {
+    return await this.bpsContract.write.grantPoints([requests], {account, chain: this.chain})
   }
 
-  public async transferPoints(appId: number, requests: TransferRequest[]) {
-    return await this.bpsContract.transferPoints(appId, requests);
+  public async transferPoints(appId: bigint, requests: readonly TransferRequest[], account: Hex): Promise<WriteContractReturnType>  {
+    return await this.bpsContract.write.transferPoints([appId, requests], {account, chain: this.chain})
   }
 
-  public async cancelTransfer(uid: number) {
-    return await this.bpsContract.cancelTransfer(uid);
+  public async cancelTransfer(uid: `0x${string}`, account: Hex) {
+    return await this.bpsContract.write.cancelTransfer([uid], {account, chain: this.chain});
   }
 
-  public async getAppTotalPoints(session: number, appId: number) {
-    return await this.bpsContract.getTotalPoint(session, appId);
+  public async getAppTotalPoints(session: bigint, appId: bigint) {
+    return await this.bpsContract.read.getTotalPoint([session, appId]);
   }
 
-  public async getAppAvailablePoints(session: number, appId: number) {
-    return await this.bpsContract.getAvailablePoint(session, appId);
+  public async getAppAvailablePoints(session: bigint, appId: bigint) {
+    return await this.bpsContract.read.getAvailablePoint([session, appId]);
   }
 
   public async getUserPoints() {

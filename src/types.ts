@@ -1,9 +1,11 @@
+import { Hex } from "viem";
+
 export type GrantRequest = {
-  appId: number;
-  point: number;
-};
+  appId: bigint;
+  point: bigint;
+} ;
 
 export type TransferRequest = {
-  recipientAddress: string;
-  point: number;
+  recipient: Hex;
+  point: bigint;
 };

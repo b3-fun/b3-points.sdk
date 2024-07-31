@@ -537,4 +537,4 @@ export const BPSContractABI = [
       },
     ],
   },
-];
+] as const;
