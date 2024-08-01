@@ -9,3 +9,7 @@ export type TransferRequest = {
   recipient: Hex;
   point: bigint;
 };
+
+export type UserPoints = {
+  points: string;
+};

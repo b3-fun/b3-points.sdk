@@ -1,3 +1,4 @@
+import type { GrantRequest, TransferRequest, UserPoints } from "types";
 import type {
   Chain,
   EIP1193Provider,
@@ -10,8 +11,12 @@ import type {
 import { createWalletClient, custom, getContract } from "viem";
 
 import { BPSContractABI } from "./contracts/BPS_ABI";
-import { getUserPointsGraphCall } from "./services/indexer";
-import type { GrantRequest, TransferRequest } from "./types";
+import { fetchQuery } from "./services/indexer/fetcher";
+import { aggregateUserPointQuery } from "./services/indexer/queries/bps/point-transfer";
+import type {
+  ListQueryResponse,
+  QueryResponse,
+} from "./services/indexer/types";
 
 export class BPS {
   private bpsContractAddress: Hex;
@@ -20,10 +25,12 @@ export class BPS {
     WalletClient
   >;
   private chain: Chain;
+  private indexerEndpoint: string;
 
-  constructor(address: Hex, chain: Chain) {
+  constructor(address: Hex, indexerURL: string, chain: Chain) {
     this.bpsContractAddress = address;
     this.chain = chain;
+    this.indexerEndpoint = indexerURL;
   }
 
   public connect(provider: EIP1193Provider): void {
@@ -84,7 +91,18 @@ export class BPS {
     return await this.bpsContract.read.getAvailablePoint([session, appId]);
   }
 
-  public async getUserPoints(): Promise<void> {
-    return getUserPointsGraphCall();
+  public async getUserPoints(
+    account: Hex,
+    appId?: bigint,
+    session?: bigint,
+  ): Promise<UserPoints> {
+    const response = await fetchQuery<
+      QueryResponse<ListQueryResponse<UserPoints>>
+    >(this.indexerEndpoint, aggregateUserPointQuery, {
+      appId: appId?.toString(),
+      user: account.toString(),
+      session: session?.toString(),
+    });
+    return response.data.data.results[0] || { points: 0 };
   }
 }

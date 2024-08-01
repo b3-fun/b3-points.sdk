@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --color --ext .ts src/"
+    "lint": "eslint --color --ext .ts src/",
+    "example:getUserPoints": "ts-node ./src/example/bps/user-points.ts"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,7 @@
   "packageManager": "yarn@4.3.1",
   "dependencies": {
     "@chainsafe/eslint-config": "^2.2.4",
+    "bps": "^2.0.1",
     "dns-packet": "^5.6.1",
     "typescript": "^5.5.3",
     "viem": "^2.18.6"
