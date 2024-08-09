@@ -1,20 +1,18 @@
-export const aggregateUserPointQuery = `
-  query AggregateUserPoint(
+export const aggregateAppPointGrantQuery = `
+  query AggregateAppPointGrants(
     $appId: String,
     $chainId: Int,
     $pageNumber: Int = 1,
     $pageSize: Int = 20,
     $session: String,
-    $user: String,
-    $rankings: AggregateUserPointRankingArgs
+    $rankings: AggregateAppPointsGrantsRankingArgs
   ) {
-    data: aggregateUserPoint(
+    data: aggregateAppPointGrants(
       appId: $appId,
       chainId: $chainId,
       pageNumber: $pageNumber,
       pageSize: $pageSize,
       session: $session,
-      user: $user,
       rankings: $rankings
     ){
       pageInfo {
@@ -24,33 +22,59 @@ export const aggregateUserPointQuery = `
       pageSize
     }
     results {
-      user
+      appId
       points
     }
   }
 }  
 `;
-export const listPointTransferQuery = `
-  query ListPointTransfers(
-    $id: String,
+export const aggregateSessionPointGrantQuery = `
+  query AggregateSessionPointGrants(
     $appId: String,
     $chainId: Int,
     $pageNumber: Int = 1,
     $pageSize: Int = 20,
     $session: String,
-    $user: String,
-    $status: String,
+    $rankings: AggregateSessionPointsGrantsRankingArgs
+  ) {
+    data: aggregateAppPointGrants(
+      appId: $appId,
+      chainId: $chainId,
+      pageNumber: $pageNumber,
+      pageSize: $pageSize,
+      session: $session,
+      rankings: $rankings
+    ){
+      pageInfo {
+      hasNextPage
+      hasPreviousPage
+      pageNumber
+      pageSize
+    }
+    results {
+      session
+      points
+    }
+  }
+}  
+`;
+export const listPointGrantsQuery = `
+  query ListAppPointGrants(
+    $id: String
+    $appId: String,
+    $chainId: Int,
+    $pageNumber: Int = 1,
+    $pageSize: Int = 20,
+    $session: String,
     $rankings: ListPointsGrantsRankingArgs
   ) {
-    data: listPointTransfers(
+    data: listPointGrants(
       id: $id,
       appId: $appId,
       chainId: $chainId,
       pageNumber: $pageNumber,
       pageSize: $pageSize,
       session: $session,
-      user: $user,
-      status: $status
       rankings: $rankings
     ){
       pageInfo {
@@ -60,8 +84,6 @@ export const listPointTransferQuery = `
       pageSize
     }
     results {
-      user
-      status
       session
       points
       id

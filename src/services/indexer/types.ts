@@ -2,6 +2,7 @@ export type BasicParams = {
   chainId?: number;
   pageNumber?: number;
   pageSize?: number;
+  rankings?: Ranking;
 };
 
 export type RequestParams = BasicParams & {
@@ -21,24 +22,12 @@ export const Attribute = {
 } as const;
 
 export const Direction = {
-  appId: "appId",
-  points: "points",
+  ASC: "ASC",
+  DESC: "DESC",
 } as const;
 
 export type QueryResponse<T> = {
   data: {
     data: T;
   };
-};
-
-export type ListQueryResponse<T> = {
-  pageInfo: PageInfo;
-  results: T[];
-};
-
-export type PageInfo = {
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  pageNumber: number;
-  pageSize: number;
 };

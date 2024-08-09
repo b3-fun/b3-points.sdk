@@ -1,4 +1,11 @@
-import type { GrantRequest, TransferRequest, UserPoints } from "types";
+import type {
+  AggregateUserPointsOptions,
+  GrantRequest,
+  ListQueryResponse,
+  TransferRequest,
+  UserPoints,
+  UserPointsOptions,
+} from "types";
 import type {
   Chain,
   EIP1193Provider,
@@ -13,10 +20,7 @@ import { createWalletClient, custom, getContract } from "viem";
 import { BPSContractABI } from "./contracts/BPS_ABI";
 import { fetchQuery } from "./services/indexer/fetcher";
 import { aggregateUserPointQuery } from "./services/indexer/queries/bps/point-transfer";
-import type {
-  ListQueryResponse,
-  QueryResponse,
-} from "./services/indexer/types";
+import type { QueryResponse } from "./services/indexer/types";
 
 export class BPS {
   private bpsContractAddress: Hex;
@@ -91,18 +95,34 @@ export class BPS {
     return await this.bpsContract.read.getAvailablePoint([session, appId]);
   }
 
-  public async getUserPoints(
-    account: Hex,
-    appId?: bigint,
-    session?: bigint,
-  ): Promise<UserPoints> {
+  public async getUserPoints(options: UserPointsOptions): Promise<UserPoints> {
     const response = await fetchQuery<
       QueryResponse<ListQueryResponse<UserPoints>>
     >(this.indexerEndpoint, aggregateUserPointQuery, {
-      appId: appId?.toString(),
-      user: account.toString(),
-      session: session?.toString(),
+      appId: options.appId?.toString(),
+      user: options.account.toString(),
+      session: options.session?.toString(),
     });
-    return response.data.data.results[0] || { points: 0 };
+    return (
+      response.data.data.results[0] || {
+        user: options.account.toString(),
+        points: 0,
+      }
+    );
+  }
+
+  public async aggregateUserPoints(
+    options: AggregateUserPointsOptions,
+  ): Promise<ListQueryResponse<UserPoints>> {
+    const response = await fetchQuery<
+      QueryResponse<ListQueryResponse<UserPoints>>
+    >(this.indexerEndpoint, aggregateUserPointQuery, {
+      appId: options.appId?.toString(),
+      session: options.session?.toString(),
+      pageNumber: options.pageNumber,
+      pageSize: options.pageSize,
+      rankings: options.rankings,
+    });
+    return response.data.data;
   }
 }
