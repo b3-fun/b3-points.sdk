@@ -6,7 +6,8 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --color --ext .ts src/",
-    "example:user-points": "ts-node ./src/example/bps/user-points.ts"
+    "example:user-points": "ts-node ./src/example/bps/user-points.ts",
+    "example:app-points": "ts-node ./src/example/bps/app-points.ts"
   },
   "keywords": [],
   "author": "",

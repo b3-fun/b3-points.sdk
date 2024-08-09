@@ -94,3 +94,19 @@ export const listPointGrantsQuery = `
   }
 }  
 `;
+export const getAppAvailablePointsQuery = `
+  query GetAppAvailablePoints(
+    $appId: String!,
+    $session: String,
+    $chainId: Int,
+  ) {
+    data: getAppAvailablePoints(
+      appId: $appId,
+      chainId: $chainId,
+      session: $session,
+    ){
+      appId
+      points
+  }
+}  
+`;

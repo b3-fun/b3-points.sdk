@@ -7,4 +7,4 @@ export const B3SepoliaAppRegistryContractAddress =
 export const B3SepoliaPointServiceContractAddress =
   "0xe16AA715Ac4506Ebd25408952dA2cE56461C3907";
 export const B3PointIndexerURLOnB3Sepolia =
-  "https://chainsafe-gaming.squids.live/points-b3-sepolia/graphql";
+  "https://b3-fun.squids.live/points-b3-sepolia/graphql";

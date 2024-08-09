@@ -1,5 +1,8 @@
 import type {
+  AggregateAppPointsOptions,
   AggregateUserPointsOptions,
+  AppPoints,
+  AppPointsOptions,
   GrantRequest,
   ListQueryResponse,
   TransferRequest,
@@ -11,7 +14,6 @@ import type {
   EIP1193Provider,
   GetContractReturnType,
   Hex,
-  ReadContractReturnType,
   WalletClient,
   WriteContractReturnType,
 } from "viem";
@@ -19,6 +21,10 @@ import { createWalletClient, custom, getContract } from "viem";
 
 import { BPSContractABI } from "./contracts/BPS_ABI";
 import { fetchQuery } from "./services/indexer/fetcher";
+import {
+  aggregateAppPointGrantQuery,
+  getAppAvailablePointsQuery,
+} from "./services/indexer/queries/bps/point-grant";
 import { aggregateUserPointQuery } from "./services/indexer/queries/bps/point-transfer";
 import type { QueryResponse } from "./services/indexer/types";
 
@@ -81,21 +87,59 @@ export class BPS {
     });
   }
 
-  public async getAppTotalPoints(
-    session: bigint,
-    appId: bigint,
-  ): Promise<ReadContractReturnType> {
-    return await this.bpsContract.read.getTotalPoint([session, appId]);
+  public async getTotalAppPoints(
+    options: AppPointsOptions,
+  ): Promise<AppPoints> {
+    const response = await fetchQuery<
+      QueryResponse<ListQueryResponse<AppPoints>>
+    >(this.indexerEndpoint, aggregateAppPointGrantQuery, {
+      appId: options.appId.toString(),
+      session: options.session?.toString(),
+    });
+    return (
+      response.data.data.results[0] || {
+        appId: options.appId.toString(),
+        points: 0,
+      }
+    );
   }
 
   public async getAppAvailablePoints(
-    session: bigint,
-    appId: bigint,
-  ): Promise<ReadContractReturnType> {
-    return await this.bpsContract.read.getAvailablePoint([session, appId]);
+    options: AppPointsOptions,
+  ): Promise<AppPoints> {
+    const response = await fetchQuery<QueryResponse<AppPoints>>(
+      this.indexerEndpoint,
+      getAppAvailablePointsQuery,
+      {
+        appId: options.appId.toString(),
+        session: options.session?.toString(),
+      },
+    );
+    return (
+      response.data.data || {
+        appId: options.appId.toString(),
+        points: 0,
+      }
+    );
   }
 
-  public async getUserPoints(options: UserPointsOptions): Promise<UserPoints> {
+  public async aggregateAppPoints(
+    options: AggregateAppPointsOptions,
+  ): Promise<ListQueryResponse<AppPoints>> {
+    const response = await fetchQuery<
+      QueryResponse<ListQueryResponse<AppPoints>>
+    >(this.indexerEndpoint, aggregateAppPointGrantQuery, {
+      session: options.session?.toString(),
+      pageNumber: options.pageNumber,
+      pageSize: options.pageSize,
+      rankings: options.rankings,
+    });
+    return response.data.data;
+  }
+
+  public async getTotalUserPoints(
+    options: UserPointsOptions,
+  ): Promise<UserPoints> {
     const response = await fetchQuery<
       QueryResponse<ListQueryResponse<UserPoints>>
     >(this.indexerEndpoint, aggregateUserPointQuery, {
