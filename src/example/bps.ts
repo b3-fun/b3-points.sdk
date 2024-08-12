@@ -84,14 +84,14 @@ export async function advanceSession(): Promise<string> {
   return response.toString();
 }
 
-export async function getTotalAppPoints(): Promise<string> {
+export async function getAppTotalPoints(): Promise<string> {
   const bps = new BPS(
     B3PointIndexerURLOnB3Sepolia,
     B3SepoliaPointServiceContractAddress,
     mainnet,
   );
 
-  const response = await bps.getTotalAppPoints({
+  const response = await bps.getAppTotalPoints({
     appId: 3n,
     session: 1n,
   });
@@ -129,14 +129,14 @@ export async function aggregateAppPoints(): Promise<
   });
 }
 
-export async function getTotalUserPoints(): Promise<string> {
+export async function getUserTotalPoints(): Promise<string> {
   const bps = new BPS(
     B3PointIndexerURLOnB3Sepolia,
     B3SepoliaPointServiceContractAddress,
     mainnet,
   );
 
-  const response = await bps.getTotalUserPoints({
+  const response = await bps.getUserTotalPoints({
     account: "0x51326086f9648740BA26C7D4190c41Ef2bA94399",
   });
   return response.points;

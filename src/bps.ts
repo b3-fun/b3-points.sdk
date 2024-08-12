@@ -103,7 +103,7 @@ export class BPS {
     });
   }
 
-  public async getTotalAppPoints(
+  public async getAppTotalPoints(
     options: AppPointsOptions,
   ): Promise<AppPoints> {
     const response = await fetchQuery<
@@ -153,7 +153,7 @@ export class BPS {
     return response.data.data;
   }
 
-  public async getTotalUserPoints(
+  public async getUserTotalPoints(
     options: UserPointsOptions,
   ): Promise<UserPoints> {
     const response = await fetchQuery<

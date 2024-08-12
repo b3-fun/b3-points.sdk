@@ -23,7 +23,6 @@ export async function registerApp(): Promise<string> {
     B3SepoliaAppRegistryContractAddress,
     b3Sepolia,
   );
-  console.log(appModeratorPrivateKey);
   registry.connect();
   const resp = await registry.register(
     "asdf.b3.fun",

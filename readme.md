@@ -14,11 +14,11 @@
 # Installation
 
 ```
-yarn add @b3-fum/bps-sdk
+yarn add @b3-fun/bps-sdk
 ```
 
 ```
-npm install @b3-fum/bps-sdk
+npm install @b3-fun/bps-sdk
 ```
 
 # Getting Started
@@ -26,25 +26,61 @@ npm install @b3-fum/bps-sdk
 Intialize the library for AppRegistry.
 ```typescript
 import {AppRegistry} from '@b3-fun/bps-sdk';
-import {ethers} from 'ethers';
+import { B3PointIndexerURLOnB3Sepolia, B3SepoliaAppRegistryContractAddress} from '@b3-fun/bps-sdk'
+import { b3Sepolia } from 'viem/chains'
+import 'viem/window'
 
-const APP_REGISTRY_ADDRESS = "0xaddr";
-const appRegistry = new AppRegistry(APP_REGISTRY_ADDRESS);
-
-const provider = ethers.getDefaultProvider('b3-sepolia');
-appRegistry.connect(provider);
+const registry = new AppRegistry(
+  B3PointIndexerURLOnB3Sepolia,
+  B3SepoliaAppRegistryContractAddress,
+  b3Sepolia,
+);
+registry.connect(window.ethereum); // for browser only. For Script registry.connect() to use defaull provider
 ```
 
 Intialize the library for B3PointService (BPS).
 ```typescript
 import {BPS} from '@b3-fun/bps-sdk';
-import {ethers} from 'ethers';
+import { B3PointIndexerURLOnB3Sepolia, B3SepoliaPointServiceContractAddress} from '@b3-fun/bps-sdk'
+import { b3Sepolia } from 'viem/chains'
+import 'viem/window'
 
-const BPS_ADDRESS = "0xaddr";
-const bps = new BPS(BPS_ADDRESS);
+ const bps = new BPS(
+  B3PointIndexerURLOnB3Sepolia,
+  B3SepoliaPointServiceContractAddress, 
+  b3Sepolia,
+);
+bps.connect(window.ethereum); // for browser only. For Script registry.connect() to use defaull provider
+```
 
-const provider = ethers.getDefaultProvider('b3-sepolia');
-bps.connect(provider);
+## Setting Up Account
+Contract write call requires wallet account which can be initiated in two ways.
+#### JSON-RPC Account
+A JSON-RPC Account is an Account whose signing keys are stored on the external Wallet
+A JSON-RPC Account can just be initialized as an Address string. 
+In the usage below, we are extracting the address from a Browser
+Extension Wallet (e.g. MetaMask) with the window.ethereum 
+Provider via eth_requestAccounts
+
+```typescript
+import 'viem/window'
+
+const [account] = await window.ethereum.request({
+method: 'eth_requestAccounts'
+})
+```
+
+#### Local Accounts (Private Key, Mnemonic, etc)
+A Local Account is an Account whose signing keys are stored on 
+the consuming user's machine. It performs signing of 
+transactions & messages with a private key before broadcasting
+the transaction or message over JSON-RPC.
+
+
+```typescript
+import { privateKeyToAccount } from 'viem/accounts'
+
+const account = privateKeyToAccount('0x...')
 ```
 
 ## Register an app
@@ -54,42 +90,53 @@ The `register` function allows you to register an application to the AppRegistry
 ### Example
 
 ```typescript
-import {getGatewayResponse} from './utils';
-
-// initialize appRegistry
-// ...
+// Init AppRegistry
+// Init Account
 
 const appName = 'game.b3.fun';
 const operator = '0xFD50b031E778fAb33DfD2Fc3Ca66a1EeF0652165';
-const gatewayResponse = getGatewayResponse(name); // call ENS offchain registry.
 
-const appId = appRegistry.register({
+const appId = registry.register({
   appName: appName,
   operator: operator,
-  gatewayResponse: gatewayResponse
+  account 
+});
+```
+
+## List Apps
+The `listApps` function returns all the registered apps. It accepts rankings and pagination arguments.
+
+### Example
+
+```typescript
+// Init AppRegistry
+
+const response = await registry.listApps({
+  rankings: { direction: "DESC", attribute: "createdAt" },
+  pageNumber: 1,
+  pageSize: 10,
 });
 ```
 
 ## Grant Points (only B3 admin)
 
-The `grantPoints` function allows B3 admin to grant points to qualified applications for the upcoming session. This is only callable by B3 Admin.
+The `grantPoints` function allows B3 admin to grant points to 
+qualified applications for the upcoming session. This is only callable by B3 Admin.
 
 ### Example
 
 ```typescript
-// initialize BPS
-// ...
-
-const signer = new ethers.Wallet(privateKey, provider); // B3 admin
+// Init BPS
+// Init Account
 
 bps.grantPoints({
   requests: [
-    {appId: 2, point: 10000},
-    {appId: 3, point: 40000},
-    {appId: 4, point: 80000},
+    {appId: 2n, point: 10000},
+    {appId: 3n, point: 40000},
+    {appId: 4n, point: 80000},
     ...
   ]},
-  signer: signer
+  account: account,
 );
 ```
 
@@ -100,12 +147,10 @@ The `transferPoints` function allows app operator to distribute granted points t
 ### Example
 
 ```typescript
-// initialize BPS
-// ...
+// Init BPS
+// Init Account
 
-const signer = new ethers.Wallet(privateKey, provider); // app operator
-
-const appId = 2; // app ID for 'game.b3.fun'
+const appId = 2n; // app ID for 'game.b3.fun'
 
 const transferUIDs = bps.transferPoints({
   appId,
@@ -115,7 +160,7 @@ const transferUIDs = bps.transferPoints({
     {recipient: '', point: 21},
     ...
   ]},
-  signer: signer
+  account: account
 );
 ```
 
@@ -126,26 +171,106 @@ The app operator can optionally call `cancelTransfer` to cancel a pending transf
 ### Example
 
 ```typescript
-// initialize BPS
-// ...
-
-const signer = new ethers.Wallet(privateKey, provider); // app operator
+// Init BPS
+// Init Account
 
 bps.cancelTransfer({
     uid: '0xb16fa048b0d597f5a821747eba64efa4762ee5143e9a80600d0005386edfc995'
   },
-  signer: signer
+  account: account,
 );
 ```
 
-## Get App Total Point
+## Advance Session
+Advance Session creates a new session
 
-Call contract to get the total point granted to an application for a given session.
+### Example
 
-## Get App Available Point
+```typescript
+// Init BPS
+// Init Account
 
-Call contract to get the point left after distributing points to users for a given session.
+await bps.advanceSession(
+  account,
+);
+```
 
-## Get User Point
+## Get App Total Points
+Returns the total point by the appId. Optionally you can provide session
+to get total points for the app for that session only.
 
-Call graphQL api to get the total point for a user. This should allow filters for sessions and apps.
+### Example
+
+```typescript
+// Init BPS
+
+const response = await bps.getAppTotalPoints({
+  appId: 3n,
+  session: 1n,
+});
+```
+## Get App Available Points
+Returns the total point by the appId after distributing it to the user. Optionally you can provide session
+to get total points for the app for that session only.
+
+### Example
+
+```typescript
+// Init BPS
+
+await bps.getAppAvailablePoints({
+  appId: 3n,
+  session: 1n,
+});
+```
+
+## Aggregate App Points
+Returns a list of total points grouped by the appId. Optionally you can provide session
+to get total points for each app for that session only.
+You can also provide rankings and pagination arguments.
+
+### Example
+
+```typescript
+// Init BPS
+
+const response = await bps.aggregateAppPoints({
+  session: 1n,
+  rankings: { direction: "ASC", attribute: "points" },
+  pageNumber: 1,
+  pageSize: 10,
+});
+```
+
+## Get User Total Points
+Returns the points of a user. Provide session to get total points for a session.
+### Example
+
+```typescript
+// Init BPS
+
+await bps.getUserTotalPoints({
+  account: "0x....",
+});
+```
+## Aggregate User Points
+Returns a list of total points grouped by the user address. Optionally you can provide session
+to get total points for each user for that session only.
+You can also provide rankings and pagination arguments.
+
+### Example
+
+```typescript
+// Init BPS
+
+const response = await bps.aggregateUserPoints({
+  appId: 3n,
+  session: 1n,
+  rankings: { direction: "DESC", attribute: "points" },
+  pageNumber: 1,
+  pageSize: 10,
+});
+```
+
+## Examples
+For full examples of each operation follow `src/example` folder

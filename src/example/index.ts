@@ -3,8 +3,8 @@ import {
   aggregateAppPoints,
   aggregateUserPoints,
   getAppAvailablePoints,
-  getTotalAppPoints,
-  getTotalUserPoints,
+  getAppTotalPoints,
+  getUserTotalPoints,
   grantPoints,
   transferPoints,
 } from "./bps";
@@ -16,7 +16,7 @@ async function main(): Promise<void> {
   });
 
   // await grantPoints().then((res) => console.log("grantPoints:", res));
-  await getTotalAppPoints().then((res) =>
+  await getAppTotalPoints().then((res) =>
     console.log("getTotalAppPoints:", res),
   );
   await getAppAvailablePoints().then((res) =>
@@ -27,7 +27,7 @@ async function main(): Promise<void> {
   );
 
   // await transferPoints().then((res) => console.log("transferPoints:", res));
-  await getTotalUserPoints().then((res) =>
+  await getUserTotalPoints().then((res) =>
     console.log("getTotalUserPoints:", res),
   );
   await aggregateUserPoints().then((res) =>
