@@ -9,6 +9,7 @@ export type RequestParams = BasicParams & {
   appId?: string;
   session?: string;
   user?: string;
+  operator?: string;
 };
 
 export type Ranking = {
@@ -19,6 +20,7 @@ export type Ranking = {
 export const Attribute = {
   appId: "appId",
   points: "points",
+  createdAt: "createdAt",
 } as const;
 
 export const Direction = {

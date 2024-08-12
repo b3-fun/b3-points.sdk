@@ -10,14 +10,16 @@ import type {
   UserPointsOptions,
 } from "types";
 import type {
+  Address,
   Chain,
   EIP1193Provider,
   GetContractReturnType,
   Hex,
+  PrivateKeyAccount,
   WalletClient,
   WriteContractReturnType,
 } from "viem";
-import { createWalletClient, custom, getContract } from "viem";
+import { http, createWalletClient, custom, getContract } from "viem";
 
 import { BPSContractABI } from "./contracts/BPS_ABI";
 import { fetchQuery } from "./services/indexer/fetcher";
@@ -37,16 +39,21 @@ export class BPS {
   private chain: Chain;
   private indexerEndpoint: string;
 
-  constructor(address: Hex, indexerURL: string, chain: Chain) {
+  constructor(indexerURL: string, address: Hex, chain: Chain) {
     this.bpsContractAddress = address;
     this.chain = chain;
     this.indexerEndpoint = indexerURL;
   }
 
-  public connect(provider: EIP1193Provider): void {
+  // Method overloads
+  public connect(): void; // Default provider
+  public connect(provider: EIP1193Provider): void; // Custom provider
+
+  // Implementation of the connect method
+  public connect(provider?: EIP1193Provider): void {
     const client = createWalletClient({
       chain: this.chain,
-      transport: custom(provider),
+      transport: provider ? custom(provider) : http(), // Use custom transport if provider is provided
     });
 
     this.bpsContract = getContract({
@@ -58,7 +65,7 @@ export class BPS {
 
   public async grantPoints(
     requests: readonly GrantRequest[],
-    account: Hex,
+    account: PrivateKeyAccount | Address,
   ): Promise<WriteContractReturnType> {
     return await this.bpsContract.write.grantPoints([requests], {
       account,
@@ -69,7 +76,7 @@ export class BPS {
   public async transferPoints(
     appId: bigint,
     requests: readonly TransferRequest[],
-    account: Hex,
+    account: PrivateKeyAccount | Address,
   ): Promise<WriteContractReturnType> {
     return await this.bpsContract.write.transferPoints([appId, requests], {
       account,
@@ -78,10 +85,19 @@ export class BPS {
   }
 
   public async cancelTransfer(
-    uid: `0x${string}`,
-    account: Hex,
+    uid: Hex,
+    account: PrivateKeyAccount | Address,
   ): Promise<WriteContractReturnType> {
     return await this.bpsContract.write.cancelTransfer([uid], {
+      account,
+      chain: this.chain,
+    });
+  }
+
+  public async advanceSession(
+    account: PrivateKeyAccount | Address,
+  ): Promise<WriteContractReturnType> {
+    return await this.bpsContract.write.advanceSession({
       account,
       chain: this.chain,
     });

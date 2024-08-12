@@ -1,4 +1,4 @@
-import type { Hex } from "viem";
+import type { Address, Hex } from "viem";
 
 export type GrantRequest = {
   appId: bigint;
@@ -6,7 +6,7 @@ export type GrantRequest = {
 };
 
 export type TransferRequest = {
-  recipient: Hex;
+  recipient: Address;
   point: bigint;
 };
 
@@ -16,7 +16,7 @@ export type Pagination = {
 };
 
 export interface UserPointsOptions {
-  account: Hex;
+  account: Address;
   appId?: bigint;
   session?: bigint;
 }
@@ -44,7 +44,7 @@ export type AggregateAppPointsOptions = Pagination & {
 };
 
 export type ListAppsOptions = Pagination & {
-  operator?: bigint;
+  operator?: Hex;
   rankings?: {
     attribute: "createdAt";
     direction: "ASC" | "DESC";
