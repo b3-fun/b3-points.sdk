@@ -31,7 +31,7 @@ import { b3Sepolia } from 'viem/chains'
 import 'viem/window'
 
 const registry = new AppRegistry(
-  B3PointIndexerURLOnB3Sepolia,
+  B3SepoliaPointIndexerURL,
   B3SepoliaAppRegistryContractAddress,
   b3Sepolia,
 );
@@ -46,7 +46,7 @@ import { b3Sepolia } from 'viem/chains'
 import 'viem/window'
 
  const bps = new BPS(
-  B3PointIndexerURLOnB3Sepolia,
+   B3SepoliaPointIndexerURL,
   B3SepoliaPointServiceContractAddress, 
   b3Sepolia,
 );

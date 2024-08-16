@@ -6,5 +6,11 @@ export const B3SepoliaAppRegistryContractAddress =
   "0xa6f674D1DbAfFebd1c0cebbBA7178Ef5Adf829A5";
 export const B3SepoliaPointServiceContractAddress =
   "0xe16AA715Ac4506Ebd25408952dA2cE56461C3907";
-export const B3PointIndexerURLOnB3Sepolia =
+export const B3MainnetAppRegistryContractAddress =
+  "0xa6f674D1DbAfFebd1c0cebbBA7178Ef5Adf829A5";
+export const B3MainnetPointServiceContractAddress =
+  "0xe16AA715Ac4506Ebd25408952dA2cE56461C3907";
+export const B3SepoliaPointIndexerURL =
   "https://b3-fun.squids.live/points-b3-sepolia/graphql";
+export const B3MainnetPointIndexerURL =
+  "https://b3-fun.squids.live/points-b3/graphql";
