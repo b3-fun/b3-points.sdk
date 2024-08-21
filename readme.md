@@ -14,11 +14,11 @@
 # Installation
 
 ```
-yarn add @b3-fun/bps-sdk
+yarn add @b3dotfun/b3-points.sdk
 ```
 
 ```
-npm install @b3-fun/bps-sdk
+npm install @b3dotfun/b3-points.sdk
 ```
 
 # Getting Started
