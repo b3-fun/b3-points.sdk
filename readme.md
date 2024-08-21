@@ -25,8 +25,8 @@ npm install @b3dotfun/b3-points.sdk
 
 Intialize the library for AppRegistry.
 ```typescript
-import {AppRegistry} from '@b3-fun/bps-sdk';
-import { B3PointIndexerURLOnB3Sepolia, B3SepoliaAppRegistryContractAddress} from '@b3-fun/bps-sdk'
+import {AppRegistry} from '@b3dotfun/b3-points.sdk';
+import { B3PointIndexerURLOnB3Sepolia, B3SepoliaAppRegistryContractAddress} from '@b3dotfun/b3-points.sdk'
 import { b3Sepolia } from 'viem/chains'
 import 'viem/window'
 
@@ -40,8 +40,8 @@ registry.connect(window.ethereum); // for browser only. For Script registry.conn
 
 Intialize the library for B3PointService (BPS).
 ```typescript
-import {BPS} from '@b3-fun/bps-sdk';
-import { B3PointIndexerURLOnB3Sepolia, B3SepoliaPointServiceContractAddress} from '@b3-fun/bps-sdk'
+import {BPS} from '@b3dotfun/b3-points.sdk';
+import { B3PointIndexerURLOnB3Sepolia, B3SepoliaPointServiceContractAddress} from '@b3dotfun/b3-points.sdk'
 import { b3Sepolia } from 'viem/chains'
 import 'viem/window'
 
