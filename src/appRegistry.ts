@@ -55,11 +55,10 @@ export class AppRegistry {
     operator: `0x${string}`,
     account: PrivateKeyAccount | Address,
   ): Promise<WriteContractReturnType> {
-    const ccipGatewayResp = await lookupENSName(appName);
+    const ccipGatewayResp = await lookupENSName(appName, this.chain);
 
     return await this.appRegistryContract.write.register(
       [appName, operator, ccipGatewayResp],
-      // { account, chain: this.chain },
       { account, chain: this.chain },
     );
   }
