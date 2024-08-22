@@ -14,7 +14,7 @@ import {
 dotenv.config(); // Load environment variables from .env file
 
 const appModeratorPrivateKey =
-  `0x${process.env.B3_ADMIN_PRIVATE_KEY}` || `{0x}`;
+  `0x${process.env.MODERATOR_PRIVATE_KEY}` || `{0x}`;
 
 export async function transferPoints(): Promise<string> {
   const bps = new BPS(
