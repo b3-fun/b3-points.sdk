@@ -16,7 +16,7 @@ import {
 dotenv.config(); // Load environment variables from .env file
 
 const appModeratorPrivateKey =
-  `0x${process.env.B3_ADMIN_PRIVATE_KEY}` || `{0x}`;
+  `0x${process.env.MODERATOR_PRIVATE_KEY}` || `{0x}`;
 const b3AdminPrivateKey = `0x${process.env.B3_ADMIN_PRIVATE_KEY}` || `{0x}`;
 
 const registry = new AppRegistry(
