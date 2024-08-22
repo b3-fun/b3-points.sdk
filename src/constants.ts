@@ -14,9 +14,9 @@ export const B3SepoliaAppRegistryContractAddress =
 export const B3SepoliaPointServiceContractAddress =
   "0xe16AA715Ac4506Ebd25408952dA2cE56461C3907";
 export const B3MainnetAppRegistryContractAddress =
-  "0xa6f674D1DbAfFebd1c0cebbBA7178Ef5Adf829A5";
+  "0x28F8EBc9cdD1AB17056Baf306D5b61d2D022cbC6";
 export const B3MainnetPointServiceContractAddress =
-  "0xe16AA715Ac4506Ebd25408952dA2cE56461C3907";
+  "0x5Bcd76f3d818770e31E7a4B6D449e35de0eA3e4D";
 
 // Points Indexers
 export const B3SepoliaPointIndexerURL =
