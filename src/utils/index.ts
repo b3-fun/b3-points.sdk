@@ -1,12 +1,15 @@
 // https://npmjs.com/package/dns-packet
-import type { Hex } from "viem";
+import type { Chain, Hex } from "viem";
 import { parseAbi, encodeFunctionData } from "viem";
 import { namehash } from "viem/ens";
 
 import {
   SepoliaCCIPGatewayBaseUrl,
   SepoliaENSResolverAddress,
+  MainnetCCIPGatewayBaseUrl,
+  MainnetENSResolverAddress,
 } from "../constants";
+import { b3Sepolia } from "viem/chains";
 
 /* eslint-disable  @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable  @typescript-eslint/no-require-imports */
@@ -21,7 +24,7 @@ const OffchainResolverABI = parseAbi([
   "function resolve(bytes calldata name, bytes calldata data) external view returns (bytes memory)",
 ]);
 
-export const lookupENSName = async (name: string): Promise<Hex> => {
+export const lookupENSName = async (name: string, chain: Chain): Promise<Hex> => {
   // Encode app ENS name to get dns name and node
   /* eslint-disable  @typescript-eslint/no-unsafe-call */
   /* eslint-disable  @typescript-eslint/no-unsafe-member-access */
@@ -41,9 +44,14 @@ export const lookupENSName = async (name: string): Promise<Hex> => {
   });
 
   // Call CCIP gateway to lookup the ens name
-  const resp = await fetch(
-    `${SepoliaCCIPGatewayBaseUrl}/${SepoliaENSResolverAddress}/${calldata}.json`,
-  );
+  var gatewayLookupURL;
+  if (chain.id === b3Sepolia.id) {
+    gatewayLookupURL = `${SepoliaCCIPGatewayBaseUrl}/${SepoliaENSResolverAddress}/${calldata}.json`
+  } else {
+    gatewayLookupURL = `${MainnetCCIPGatewayBaseUrl}/${MainnetENSResolverAddress}/${calldata}.json`
+  }
+
+  const resp = await fetch(gatewayLookupURL);
   if (!resp.ok) {
     throw new Error(`HTTP error! status: ${resp.status}`);
   }
