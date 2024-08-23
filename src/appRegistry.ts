@@ -71,6 +71,7 @@ export class AppRegistry {
       this.indexerEndpoint,
       listAppsQuery,
       {
+        ensName: options.ensName,
         operator: options.operator?.toString(),
         pageNumber: options.pageNumber,
         pageSize: options.pageSize,
