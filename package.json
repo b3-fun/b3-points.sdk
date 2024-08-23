@@ -1,6 +1,6 @@
 {
-  "name": "b3-points.sdk",
-  "version": "1.0.0",
+  "name": "@b3dotfun/b3-points.sdk",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -14,19 +14,19 @@
     "example:cancel-transfer": "ts-node src/example/bps/cancel-transfer.ts",
     "example:advance-session": "ts-node src/example/bps/advance-session.ts",
     "example:app-points": "ts-node src/example/bps/app-points.ts",
-    "example:user-points": "ts-node src/example/bps/user-points.ts"
+    "example:user-points": "ts-node src/example/bps/user-points.ts",
+    "prepublishOnly": "yarn build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
-  "packageManager": "yarn@4.3.1",
   "dependencies": {
     "@chainsafe/eslint-config": "^2.2.4",
     "dns-packet": "^5.6.1",
+    "dotenv": "^16.4.5",
     "typescript": "^5.5.3",
-    "viem": "^2.19.6",
-    "dotenv": "^16.4.5"
+    "viem": "^2.19.6"
   },
   "devDependencies": {
     "@types/dns-packet": "^5",
