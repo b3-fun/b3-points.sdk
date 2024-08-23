@@ -45,6 +45,7 @@ export type AggregateAppPointsOptions = Pagination & {
 
 export type ListAppsOptions = Pagination & {
   operator?: Hex;
+  ensName?: string;
   rankings?: {
     attribute: "createdAt";
     direction: "ASC" | "DESC";

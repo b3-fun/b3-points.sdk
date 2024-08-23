@@ -14,19 +14,19 @@
 # Installation
 
 ```
-yarn add @b3-fun/bps-sdk
+yarn add @b3dotfun/b3-points.sdk
 ```
 
 ```
-npm install @b3-fun/bps-sdk
+npm install @b3dotfun/b3-points.sdk
 ```
 
 # Getting Started
 
 Intialize the library for AppRegistry.
 ```typescript
-import {AppRegistry} from '@b3-fun/bps-sdk';
-import { B3PointIndexerURLOnB3Sepolia, B3SepoliaAppRegistryContractAddress} from '@b3-fun/bps-sdk'
+import {AppRegistry} from '@b3dotfun/b3-points.sdk';
+import { B3PointIndexerURLOnB3Sepolia, B3SepoliaAppRegistryContractAddress} from '@b3dotfun/b3-points.sdk'
 import { b3Sepolia } from 'viem/chains'
 import 'viem/window'
 
@@ -35,13 +35,13 @@ const registry = new AppRegistry(
   B3SepoliaAppRegistryContractAddress,
   b3Sepolia,
 );
-registry.connect(window.ethereum); // for browser only. For Script registry.connect() to use defaull provider
+
 ```
 
 Intialize the library for B3PointService (BPS).
 ```typescript
-import {BPS} from '@b3-fun/bps-sdk';
-import { B3PointIndexerURLOnB3Sepolia, B3SepoliaPointServiceContractAddress} from '@b3-fun/bps-sdk'
+import {BPS} from '@b3dotfun/b3-points.sdk';
+import { B3PointIndexerURLOnB3Sepolia, B3SepoliaPointServiceContractAddress} from '@b3dotfun/b3-points.sdk'
 import { b3Sepolia } from 'viem/chains'
 import 'viem/window'
 
@@ -50,8 +50,16 @@ import 'viem/window'
   B3SepoliaPointServiceContractAddress, 
   b3Sepolia,
 );
-bps.connect(window.ethereum); // for browser only. For Script registry.connect() to use defaull provider
 ```
+## Connecting RPC provider
+Connecting the provider is only required for the write operations that interact with
+the contract. For listing and other read operations interact with the indexer, and thus
+connecting to rpc provider is not required.
+```
+registry.connect(window.ethereum); // for browser only. For Script registry.connect() to use defaull provider
+```
+
+
 
 ## Setting Up Account
 Contract write call requires wallet account which can be initiated in two ways.
@@ -91,6 +99,7 @@ The `register` function allows you to register an application to the AppRegistry
 
 ```typescript
 // Init AppRegistry
+// Connect RPC
 // Init Account
 
 const appName = 'game.b3.fun';
@@ -104,7 +113,8 @@ const appId = registry.register({
 ```
 
 ## List Apps
-The `listApps` function returns all the registered apps. It accepts rankings and pagination arguments.
+The `listApps` function returns all the registered apps. It accepts `rankings` and pagination arguments.
+You can filter apps by `operator` and `ensName`
 
 ### Example
 
@@ -127,6 +137,7 @@ qualified applications for the upcoming session. This is only callable by B3 Adm
 
 ```typescript
 // Init BPS
+// Connect RPC
 // Init Account
 
 bps.grantPoints({
@@ -148,6 +159,7 @@ The `transferPoints` function allows app operator to distribute granted points t
 
 ```typescript
 // Init BPS
+// Connect RPC
 // Init Account
 
 const appId = 2n; // app ID for 'game.b3.fun'
@@ -172,6 +184,7 @@ The app operator can optionally call `cancelTransfer` to cancel a pending transf
 
 ```typescript
 // Init BPS
+// Connect RPC
 // Init Account
 
 bps.cancelTransfer({
@@ -188,6 +201,7 @@ Advance Session creates a new session
 
 ```typescript
 // Init BPS
+// Connect RPC
 // Init Account
 
 await bps.advanceSession(

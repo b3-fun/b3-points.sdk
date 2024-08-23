@@ -6,6 +6,7 @@ export const listAppsQuery = `
     $pageNumber: Int = 1,
     $pageSize: Int = 20,
     $operator: String,
+    $ensName: String,
     $rankings: ListAppRankingArgs
   ) {
     data: listApps(
@@ -15,6 +16,7 @@ export const listAppsQuery = `
       pageNumber: $pageNumber,
       pageSize: $pageSize,
       operator: $operator,
+      ensName: $ensName,
       rankings: $rankings
     ){
       pageInfo {

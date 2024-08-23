@@ -7,6 +7,17 @@
   resolved "https://registry.npmjs.org/@adraffy/ens-normalize/-/ens-normalize-1.10.0.tgz"
   integrity sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==
 
+"@b3dotfun/b3-points.sdk@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.npmjs.org/@b3dotfun/b3-points.sdk/-/b3-points.sdk-0.0.2.tgz"
+  integrity sha512-OyNbg2gjADUyY+QtTdaTyowEMAZ24+0IUj95LBocULk3eP9ycO0d5U42+9tlDfNgpzuB5GYi6FXisKcPQo8fAg==
+  dependencies:
+    "@chainsafe/eslint-config" "^2.2.4"
+    dns-packet "^5.6.1"
+    dotenv "^16.4.5"
+    typescript "^5.5.3"
+    viem "^2.19.6"
+
 "@chainsafe/eslint-config@^2.2.4":
   version "2.2.4"
   resolved "https://registry.npmjs.org/@chainsafe/eslint-config/-/eslint-config-2.2.4.tgz"

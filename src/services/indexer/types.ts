@@ -10,6 +10,7 @@ export type RequestParams = BasicParams & {
   session?: string;
   user?: string;
   operator?: string;
+  ensName?: string;
 };
 
 export type Ranking = {
