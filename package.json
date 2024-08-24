@@ -1,7 +1,8 @@
 {
   "name": "@b3dotfun/b3-points.sdk",
-  "version": "0.0.2",
+  "version": "0.0.7",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
