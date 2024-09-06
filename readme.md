@@ -3,10 +3,8 @@
 ```mermaid
     sequenceDiagram
         actor AppOperator
-        actor B3Admin
         AppOperator->>AppRegistry: Register application
         loop Every 2 weeks
-            B3Admin-->>PointsService: Grant points
             AppOperator->>PointsService: Transfer points to users
         end
 ```
