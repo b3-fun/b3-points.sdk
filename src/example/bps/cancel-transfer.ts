@@ -13,8 +13,8 @@ import {
 
 dotenv.config(); // Load environment variables from .env file
 
-const appModeratorPrivateKey =
-  `0x${process.env.MODERATOR_PRIVATE_KEY}` || `{0x}`;
+const appOperatorPrivateKey =
+  `0x${process.env.OPERATOR_PRIVATE_KEY}` || `{0x}`;
 
 export async function cancelTransfer(): Promise<string> {
   const bps = new BPS(
@@ -25,7 +25,7 @@ export async function cancelTransfer(): Promise<string> {
   bps.connect();
   const response = await bps.cancelTransfer(
     "0x123456", // replace with existing transfer uid
-    privateKeyToAccount(<Hex>appModeratorPrivateKey),
+    privateKeyToAccount(<Hex>appOperatorPrivateKey),
   );
   return response.toString();
 }

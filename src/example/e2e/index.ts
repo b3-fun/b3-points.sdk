@@ -15,9 +15,8 @@ import {
 
 dotenv.config(); // Load environment variables from .env file
 
-const appModeratorPrivateKey =
-  `0x${process.env.MODERATOR_PRIVATE_KEY}` || `{0x}`;
-const b3AdminPrivateKey = `0x${process.env.B3_ADMIN_PRIVATE_KEY}` || `{0x}`;
+const appOperatorPrivateKey =
+  `0x${process.env.OPERATOR_PRIVATE_KEY}` || `{0x}`;
 
 const registry = new AppRegistry(
   B3SepoliaPointIndexerURL,
@@ -37,8 +36,8 @@ async function main(): Promise<void> {
   // register an app
   let resp = await registry.register(
     "test.b3.fun",
-    privateKeyToAccount(<Hex>appModeratorPrivateKey).address,
-    privateKeyToAccount(<Hex>appModeratorPrivateKey),
+    privateKeyToAccount(<Hex>appOperatorPrivateKey).address,
+    privateKeyToAccount(<Hex>appOperatorPrivateKey),
   );
   console.log("register-app:", resp);
 
@@ -52,28 +51,17 @@ async function main(): Promise<void> {
   });
   console.log("list-apps:", apps);
 
-  // grant points
-  resp = await bps.grantPoints(
-    [
-      {
-        appId: BigInt(apps.results.length > 0 ? apps.results[0].appId : 3n),
-        point: 20n,
-      },
-    ],
-    privateKeyToAccount(<Hex>b3AdminPrivateKey),
-  );
-  console.log("grant-points:", resp);
 
   // grant points
   resp = await bps.transferPoints(
     BigInt(apps.results.length > 0 ? apps.results[0].appId : 3n),
     [
       {
-        recipient: privateKeyToAccount(<Hex>appModeratorPrivateKey).address, // replace
+        recipient: privateKeyToAccount(<Hex>appOperatorPrivateKey).address, // replace
         point: 20n,
       },
     ],
-    privateKeyToAccount(<Hex>appModeratorPrivateKey),
+    privateKeyToAccount(<Hex>appOperatorPrivateKey),
   );
   console.log("transfer-points:", resp);
 
@@ -85,7 +73,7 @@ async function main(): Promise<void> {
   console.log("appPoints:", appPoints);
 
   const userPoints = await bps.getUserTotalPoints({
-    account: privateKeyToAccount(<Hex>appModeratorPrivateKey).address,
+    account: privateKeyToAccount(<Hex>appOperatorPrivateKey).address,
   });
   console.log("userPoints:", userPoints);
 }
