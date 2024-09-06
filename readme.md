@@ -2,10 +2,10 @@
 
 ```mermaid
     sequenceDiagram
-        actor AppAdmin
-        AppAdmin->>AppRegistry: Register application
+        actor AppOperator
+        AppOperator->>AppRegistry: Register application
         loop Every 2 weeks
-            AppAdmin->>PointsService: Transfer points to users
+            AppOperator->>PointsService: Transfer points to users
         end
 ```
 
