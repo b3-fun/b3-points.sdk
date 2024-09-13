@@ -286,5 +286,24 @@ const response = await bps.aggregateUserPoints({
 });
 ```
 
+## List Point Transfers`
+Returns a list of point transfers. Optionally you can provide appId, session, user, status, rankings, and pagination arguments.
+
+### Example
+
+```typescript
+// Init BPS
+
+const response = await bps.listPointTransfers({
+  appId: 3n,
+  session: 1n,
+  user: "0x....",
+  status: "pending",
+  rankings: { direction: "DESC", attribute: "points" },
+  pageNumber: 1,
+  pageSize: 10,
+});
+```
+
 ## Examples
 For full examples of each operation follow `src/example` folder
