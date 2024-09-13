@@ -27,6 +27,7 @@ export interface AppPointsOptions {
 }
 
 export type AggregateUserPointsOptions = Pagination & {
+  user?: string;
   appId?: bigint;
   session?: bigint;
   rankings?: {
@@ -52,6 +53,17 @@ export type ListAppsOptions = Pagination & {
   };
 };
 
+export type ListPointTransfersOptions = Pagination & {
+  appId: bigint;
+  session?: bigint;
+  user?: string;
+  status?: string;
+  rankings?: {
+    attribute: "points";
+    direction: "ASC" | "DESC";
+  };
+};
+
 export type PageInfo = {
   hasNextPage: boolean;
   hasPreviousPage: boolean;
@@ -67,6 +79,16 @@ export type ListQueryResponse<T> = {
 export type UserPoints = {
   user: string;
   points: string;
+};
+
+export type PointTransfer = {
+  id: string;
+  user: string;
+  points: string;
+  status: string;
+  session: string;
+  appId: string;
+  chainId: string;
 };
 
 export type AppPoints = {

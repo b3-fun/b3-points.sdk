@@ -8,6 +8,7 @@ export type BasicParams = {
 export type RequestParams = BasicParams & {
   appId?: string;
   session?: string;
+  status?: string;
   user?: string;
   operator?: string;
   ensName?: string;

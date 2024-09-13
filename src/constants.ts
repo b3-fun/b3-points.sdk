@@ -3,8 +3,7 @@ export const SepoliaCCIPGatewayBaseUrl =
   "https://ens-gateway.0x5700.workers.dev/lookup";
 export const SepoliaENSResolverAddress =
   "0x1483219E707786c7E52Ed84d3Ad5C2C468E2fE4A";
-export const MainnetCCIPGatewayBaseUrl =
-  "https://ens-gateway.b3.fun/lookup";
+export const MainnetCCIPGatewayBaseUrl = "https://ens-gateway.b3.fun/lookup";
 export const MainnetENSResolverAddress =
   "0xD940a6a304775e847fac8E9233EF5eda481433f3";
 

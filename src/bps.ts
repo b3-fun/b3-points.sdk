@@ -4,7 +4,9 @@ import type {
   AppPoints,
   AppPointsOptions,
   GrantRequest,
+  ListPointTransfersOptions,
   ListQueryResponse,
+  PointTransfer,
   TransferRequest,
   UserPoints,
   UserPointsOptions,
@@ -27,7 +29,10 @@ import {
   aggregateAppPointGrantQuery,
   getAppAvailablePointsQuery,
 } from "./services/indexer/queries/bps/point-grant";
-import { aggregateUserPointQuery } from "./services/indexer/queries/bps/point-transfer";
+import {
+  aggregateUserPointQuery,
+  listPointTransferQuery,
+} from "./services/indexer/queries/bps/point-transfer";
 import type { QueryResponse } from "./services/indexer/types";
 
 export class BPS {
@@ -179,6 +184,24 @@ export class BPS {
     >(this.indexerEndpoint, aggregateUserPointQuery, {
       appId: options.appId?.toString(),
       session: options.session?.toString(),
+      user: options.user,
+      pageNumber: options.pageNumber,
+      pageSize: options.pageSize,
+      rankings: options.rankings,
+    });
+    return response.data.data;
+  }
+
+  public async listPointTransfers(
+    options: ListPointTransfersOptions,
+  ): Promise<ListQueryResponse<PointTransfer>> {
+    const response = await fetchQuery<
+      QueryResponse<ListQueryResponse<PointTransfer>>
+    >(this.indexerEndpoint, listPointTransferQuery, {
+      appId: options.appId?.toString(),
+      session: options.session?.toString(),
+      status: options.status,
+      user: options.user,
       pageNumber: options.pageNumber,
       pageSize: options.pageSize,
       rankings: options.rankings,
