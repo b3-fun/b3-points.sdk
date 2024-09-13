@@ -1,7 +1,7 @@
 export { BPS } from "./bps";
 export { AppRegistry } from "./appRegistry";
-export { 
-  SepoliaCCIPGatewayBaseUrl, 
+export {
+  SepoliaCCIPGatewayBaseUrl,
   SepoliaENSResolverAddress,
   MainnetCCIPGatewayBaseUrl,
   MainnetENSResolverAddress,
