@@ -40,7 +40,7 @@ export const listPointTransferQuery = `
     $session: String,
     $user: String,
     $status: String,
-    $rankings: ListPointsGrantsRankingArgs
+    $rankings: ListPointTransferRankingArgs
   ) {
     data: listPointTransfers(
       id: $id,
