@@ -1,6 +1,6 @@
 {
   "name": "@b3dotfun/b3-points.sdk",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -10,6 +10,8 @@
     "example:e2e": "ts-node src/example/e2e/index.ts",
     "example:register-app": "ts-node src/example/app/register.ts",
     "example:list-app": "ts-node src/example/app/list.ts",
+    "example:list-transfers": "ts-node src/example/bps/list-transfers.ts",
+    "example:list-sessions": "ts-node src/example/bps/list-sessions.ts",
     "example:grant-points": "ts-node src/example/bps/grant-points.ts",
     "example:transfer-points": "ts-node src/example/bps/transfer-points.ts",
     "example:cancel-transfer": "ts-node src/example/bps/cancel-transfer.ts",

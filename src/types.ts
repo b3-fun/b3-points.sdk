@@ -1,5 +1,11 @@
 import type { Address, Hex } from "viem";
 
+export type Session = {
+  createdAt: number;
+  id: string;
+  sessionId: string;
+};
+
 export type GrantRequest = {
   appId: bigint;
   point: bigint;

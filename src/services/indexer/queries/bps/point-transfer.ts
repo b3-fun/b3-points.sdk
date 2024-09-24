@@ -72,3 +72,13 @@ export const listPointTransferQuery = `
   }
 }  
 `;
+
+export const listSessionsQuery = `
+  query ListSessions {
+    sessions(orderBy: createdAt_DESC) {
+      createdAt
+      id
+      sessionId
+    }
+  }
+`;
