@@ -7,6 +7,7 @@ import type {
   ListPointTransfersOptions,
   ListQueryResponse,
   PointTransfer,
+  Session,
   TransferRequest,
   UserPoints,
   UserPointsOptions,
@@ -32,6 +33,7 @@ import {
 import {
   aggregateUserPointQuery,
   listPointTransferQuery,
+  listSessionsQuery,
 } from "./services/indexer/queries/bps/point-transfer";
 import type { QueryResponse } from "./services/indexer/types";
 
@@ -207,5 +209,14 @@ export class BPS {
       rankings: options.rankings,
     });
     return response.data.data;
+  }
+
+  public async listSessions(): Promise<{ data: Session[] }> {
+    const response = await fetchQuery<{ data: { sessions: Session[] } }>(
+      this.indexerEndpoint,
+      listSessionsQuery,
+      {},
+    );
+    return { data: response.data.sessions };
   }
 }
