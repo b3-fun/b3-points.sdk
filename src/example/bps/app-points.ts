@@ -1,17 +1,14 @@
 import type { AppPoints, ListQueryResponse } from "types";
-import { b3Sepolia } from "viem/chains";
 
 import { BPS } from "../../bps";
-import {
-  B3SepoliaPointIndexerURL,
-  B3SepoliaPointServiceContractAddress,
-} from "../../constants";
+import { b3SepoliaConfig } from "../../config";
 
+const chainConfig = b3SepoliaConfig;
 export async function getAppTotalPoints(): Promise<string> {
   const bps = new BPS(
-    B3SepoliaPointIndexerURL,
-    B3SepoliaPointServiceContractAddress,
-    b3Sepolia,
+    chainConfig.indexerUrl,
+    chainConfig.pointServiceContractAddress,
+    chainConfig.chain
   );
 
   const response = await bps.getAppTotalPoints({
@@ -23,9 +20,9 @@ export async function getAppTotalPoints(): Promise<string> {
 
 export async function getAppAvailablePoints(): Promise<string> {
   const bps = new BPS(
-    B3SepoliaPointIndexerURL,
-    B3SepoliaPointServiceContractAddress,
-    b3Sepolia,
+    chainConfig.indexerUrl,
+    chainConfig.pointServiceContractAddress,
+    chainConfig.chain
   );
 
   const response = await bps.getAppAvailablePoints({
@@ -39,9 +36,9 @@ export async function aggregateAppPoints(): Promise<
   ListQueryResponse<AppPoints>
 > {
   const bps = new BPS(
-    B3SepoliaPointIndexerURL,
-    B3SepoliaPointServiceContractAddress,
-    b3Sepolia,
+    chainConfig.indexerUrl,
+    chainConfig.pointServiceContractAddress,
+    chainConfig.chain
   );
 
   return await bps.aggregateAppPoints({
@@ -54,6 +51,6 @@ export async function aggregateAppPoints(): Promise<
 
 void getAppTotalPoints().then((r) => console.log("getAppTotalPoints:", r));
 void getAppAvailablePoints().then((r) =>
-  console.log("getAppAvailablePoints:", r),
+  console.log("getAppAvailablePoints:", r)
 );
 void aggregateAppPoints().then((r) => console.log("aggregateAppPoints", r));

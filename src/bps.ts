@@ -22,7 +22,7 @@ import type {
   WalletClient,
   WriteContractReturnType,
 } from "viem";
-import { http, createWalletClient, custom, getContract } from "viem";
+import { createWalletClient, custom, getContract, http } from "viem";
 
 import { BPSContractABI } from "./contracts/BPS_ABI";
 import { fetchQuery } from "./services/indexer/fetcher";
@@ -72,7 +72,7 @@ export class BPS {
 
   public async grantPoints(
     requests: readonly GrantRequest[],
-    account: PrivateKeyAccount | Address,
+    account: PrivateKeyAccount | Address
   ): Promise<WriteContractReturnType> {
     return await this.bpsContract.write.grantPoints([requests], {
       account,
@@ -83,7 +83,7 @@ export class BPS {
   public async transferPoints(
     appId: bigint,
     requests: readonly TransferRequest[],
-    account: PrivateKeyAccount | Address,
+    account: PrivateKeyAccount | Address
   ): Promise<WriteContractReturnType> {
     return await this.bpsContract.write.transferPoints([appId, requests], {
       account,
@@ -93,7 +93,7 @@ export class BPS {
 
   public async cancelTransfer(
     uid: Hex,
-    account: PrivateKeyAccount | Address,
+    account: PrivateKeyAccount | Address
   ): Promise<WriteContractReturnType> {
     return await this.bpsContract.write.cancelTransfer([uid], {
       account,
@@ -102,7 +102,7 @@ export class BPS {
   }
 
   public async advanceSession(
-    account: PrivateKeyAccount | Address,
+    account: PrivateKeyAccount | Address
   ): Promise<WriteContractReturnType> {
     return await this.bpsContract.write.advanceSession({
       account,
@@ -111,7 +111,7 @@ export class BPS {
   }
 
   public async getAppTotalPoints(
-    options: AppPointsOptions,
+    options: AppPointsOptions
   ): Promise<AppPoints> {
     const response = await fetchQuery<
       QueryResponse<ListQueryResponse<AppPoints>>
@@ -128,7 +128,7 @@ export class BPS {
   }
 
   public async getAppAvailablePoints(
-    options: AppPointsOptions,
+    options: AppPointsOptions
   ): Promise<AppPoints> {
     const response = await fetchQuery<QueryResponse<AppPoints>>(
       this.indexerEndpoint,
@@ -136,7 +136,7 @@ export class BPS {
       {
         appId: options.appId.toString(),
         session: options.session?.toString(),
-      },
+      }
     );
     return (
       response.data.data || {
@@ -147,7 +147,7 @@ export class BPS {
   }
 
   public async aggregateAppPoints(
-    options: AggregateAppPointsOptions,
+    options: AggregateAppPointsOptions
   ): Promise<ListQueryResponse<AppPoints>> {
     const response = await fetchQuery<
       QueryResponse<ListQueryResponse<AppPoints>>
@@ -161,7 +161,7 @@ export class BPS {
   }
 
   public async getUserTotalPoints(
-    options: UserPointsOptions,
+    options: UserPointsOptions
   ): Promise<UserPoints> {
     const response = await fetchQuery<
       QueryResponse<ListQueryResponse<UserPoints>>
@@ -179,7 +179,7 @@ export class BPS {
   }
 
   public async aggregateUserPoints(
-    options: AggregateUserPointsOptions,
+    options: AggregateUserPointsOptions
   ): Promise<ListQueryResponse<UserPoints>> {
     const response = await fetchQuery<
       QueryResponse<ListQueryResponse<UserPoints>>
@@ -195,7 +195,7 @@ export class BPS {
   }
 
   public async listPointTransfers(
-    options: ListPointTransfersOptions,
+    options: ListPointTransfersOptions
   ): Promise<ListQueryResponse<PointTransfer>> {
     const response = await fetchQuery<
       QueryResponse<ListQueryResponse<PointTransfer>>
@@ -204,6 +204,7 @@ export class BPS {
       session: options.session?.toString(),
       status: options.status,
       user: options.user,
+      chainId: options.chainId,
       pageNumber: options.pageNumber,
       pageSize: options.pageSize,
       rankings: options.rankings,
@@ -215,8 +216,12 @@ export class BPS {
     const response = await fetchQuery<{ data: { sessions: Session[] } }>(
       this.indexerEndpoint,
       listSessionsQuery,
-      {},
+      {}
     );
     return { data: response.data.sessions };
+  }
+
+  public async getCurrentSession(): Promise<bigint> {
+    return await this.bpsContract.read.currentSession();
   }
 }

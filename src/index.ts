@@ -1,14 +1,14 @@
-export { BPS } from "./bps";
 export { AppRegistry } from "./appRegistry";
+export { BPS } from "./bps";
 export {
-  SepoliaCCIPGatewayBaseUrl,
-  SepoliaENSResolverAddress,
+  B3MainnetAppRegistryContractAddress,
+  B3MainnetPointIndexerURL,
+  B3MainnetPointServiceContractAddress,
+  B3SepoliaAppRegistryContractAddress,
+  B3SepoliaPointIndexerURL,
+  B3SepoliaPointServiceContractAddress,
   MainnetCCIPGatewayBaseUrl,
   MainnetENSResolverAddress,
-  B3SepoliaPointIndexerURL,
-  B3SepoliaAppRegistryContractAddress,
-  B3SepoliaPointServiceContractAddress,
-  B3MainnetPointIndexerURL,
-  B3MainnetAppRegistryContractAddress,
-  B3MainnetPointServiceContractAddress,
+  SepoliaCCIPGatewayBaseUrl,
+  SepoliaENSResolverAddress,
 } from "./constants";

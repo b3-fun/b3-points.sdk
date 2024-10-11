@@ -63,7 +63,8 @@ export type ListPointTransfersOptions = Pagination & {
   appId: bigint;
   session?: bigint;
   user?: string;
-  status?: string;
+  status?: "active" | "canceled";
+  chainId?: number;
   rankings?: {
     attribute: "points";
     direction: "ASC" | "DESC";
