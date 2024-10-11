@@ -1,5 +1,5 @@
-import type { ListQueryResponse, PointTransfer } from "types";
 import { b3Sepolia } from "viem/chains";
+import type { ListQueryResponse, PointTransfer } from "../../types";
 
 import { BPS } from "../../bps";
 import {
@@ -13,7 +13,7 @@ export async function listPointTransfers(): Promise<
   const bps = new BPS(
     B3SepoliaPointIndexerURL,
     B3SepoliaPointServiceContractAddress,
-    b3Sepolia,
+    b3Sepolia
   );
 
   return await bps.listPointTransfers({

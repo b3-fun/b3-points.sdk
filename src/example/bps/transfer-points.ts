@@ -33,7 +33,6 @@ export async function transferPoints(
     chainConfig.chain
   );
   bps.connect();
-  console.log(appModeratorPrivateKey);
   const response = await bps.transferPoints(
     appId,
     transferRequests,
@@ -69,9 +68,7 @@ export async function readTransferRequestsFromCsv(
   }
 }
 
-export async function listReceivedRecipients(
-  appId: bigint
-): Promise<Address[]> {
+export async function listReceivedRecipients(appId: bigint): Promise<string[]> {
   const bps = new BPS(
     chainConfig.indexerUrl,
     chainConfig.pointServiceContractAddress,
@@ -82,7 +79,7 @@ export async function listReceivedRecipients(
   const currentSession = await bps.getCurrentSession();
   // call listPointTransfers until pagination is empty
   let pagination: Pagination = { pageNumber: 1, pageSize: 100 };
-  let receivedAddresses: Address[] = [];
+  let receivedAddresses: string[] = [];
   while (true) {
     const options: ListPointTransfersOptions = {
       appId,
@@ -94,7 +91,7 @@ export async function listReceivedRecipients(
     };
     const response = await bps.listPointTransfers(options);
     response.results.forEach((transfer) => {
-      receivedAddresses.push(transfer.user as Address);
+      receivedAddresses.push(transfer.user.toLowerCase());
     });
     const pageInfo = response.pageInfo;
     if (!pageInfo.hasNextPage) {
@@ -110,10 +107,10 @@ export async function listReceivedRecipients(
 export async function transferPointsCsv(csvPath: string, appId: bigint) {
   const transferRequests = await readTransferRequestsFromCsv(csvPath);
   const receivedAddresses = await listReceivedRecipients(appId);
+  console.log(`Number of received addresses: ${receivedAddresses.length}`);
 
-  // filter out received addresses from transfer requests
   const filteredTransferRequests = transferRequests.filter(
-    (request) => !receivedAddresses.includes(request.recipient)
+    (request) => !receivedAddresses.includes(request.recipient.toLowerCase())
   );
 
   console.log(
@@ -161,9 +158,12 @@ export async function transferPointsCsv(csvPath: string, appId: bigint) {
   // log number of transfer requests, and number of request has filtered
 
   // transfer points in chunks, sleep 5s between chunks to put in new block
+  let batchNumber = 0;
   for (const chunk of chunks) {
     await transferPoints(appId, chunk);
     await new Promise((resolve) => setTimeout(resolve, 5000));
+    console.log(`Transferred batch ${batchNumber + 1} of ${chunks.length}`);
+    batchNumber++;
   }
 }
 

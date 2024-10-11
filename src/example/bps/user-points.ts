@@ -1,4 +1,4 @@
-import type { ListQueryResponse, UserPoints } from "types";
+import type { ListQueryResponse, UserPoints } from "../../types";
 
 import { BPS } from "../../bps";
 import { b3SepoliaConfig } from "../../config";

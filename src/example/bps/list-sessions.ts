@@ -1,5 +1,5 @@
-import type { Session } from "types";
 import { b3Sepolia } from "viem/chains";
+import type { Session } from "../../types";
 
 import { BPS } from "../../bps";
 import {
@@ -11,7 +11,7 @@ export async function listSessions(): Promise<{ data: Session[] }> {
   const bps = new BPS(
     B3SepoliaPointIndexerURL,
     B3SepoliaPointServiceContractAddress,
-    b3Sepolia,
+    b3Sepolia
   );
   return await bps.listSessions();
 }
