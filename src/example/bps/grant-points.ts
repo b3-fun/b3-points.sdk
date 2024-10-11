@@ -3,24 +3,20 @@ import process from "node:process";
 import * as dotenv from "dotenv";
 import type { Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { b3Sepolia } from "viem/chains";
 
 import { BPS } from "../../bps";
-import {
-  B3SepoliaPointIndexerURL,
-  B3SepoliaPointServiceContractAddress,
-} from "../../constants";
-
+import { b3SepoliaConfig } from "../../config";
 dotenv.config(); // Load environment variables from .env file
 
 const b3AdminPrivateKey: Hex =
   `0x${process.env.B3_ADMIN_PRIVATE_KEY}` || `{0x}`;
 
+const chainConfig = b3SepoliaConfig;
 export async function grantPoints(): Promise<string> {
   const bps = new BPS(
-    B3SepoliaPointIndexerURL,
-    B3SepoliaPointServiceContractAddress,
-    b3Sepolia,
+    chainConfig.indexerUrl,
+    chainConfig.pointServiceContractAddress,
+    chainConfig.chain
   );
   bps.connect();
   const response = await bps.grantPoints(
@@ -30,7 +26,7 @@ export async function grantPoints(): Promise<string> {
         point: 20n,
       },
     ],
-    privateKeyToAccount(b3AdminPrivateKey),
+    privateKeyToAccount(b3AdminPrivateKey)
   );
   return response.toString();
 }

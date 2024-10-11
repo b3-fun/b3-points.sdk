@@ -1,17 +1,14 @@
-import type { ListQueryResponse, UserPoints } from "types";
-import { b3Sepolia } from "viem/chains";
+import type { ListQueryResponse, UserPoints } from "../../types";
 
 import { BPS } from "../../bps";
-import {
-  B3SepoliaPointIndexerURL,
-  B3SepoliaPointServiceContractAddress,
-} from "../../constants";
+import { b3SepoliaConfig } from "../../config";
 
+const chainConfig = b3SepoliaConfig;
 export async function getUserTotalPoints(): Promise<string> {
   const bps = new BPS(
-    B3SepoliaPointIndexerURL,
-    B3SepoliaPointServiceContractAddress,
-    b3Sepolia,
+    chainConfig.indexerUrl,
+    chainConfig.pointServiceContractAddress,
+    chainConfig.chain
   );
 
   const response = await bps.getUserTotalPoints({
@@ -24,9 +21,9 @@ export async function aggregateUserPoints(): Promise<
   ListQueryResponse<UserPoints>
 > {
   const bps = new BPS(
-    B3SepoliaPointIndexerURL,
-    B3SepoliaPointServiceContractAddress,
-    b3Sepolia,
+    chainConfig.indexerUrl,
+    chainConfig.pointServiceContractAddress,
+    chainConfig.chain
   );
 
   return await bps.aggregateUserPoints({

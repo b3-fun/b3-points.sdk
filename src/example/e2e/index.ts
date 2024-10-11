@@ -3,15 +3,10 @@ import process from "node:process";
 import * as dotenv from "dotenv";
 import type { Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { b3Sepolia } from "viem/chains";
 
 import { AppRegistry } from "../../appRegistry";
 import { BPS } from "../../bps";
-import {
-  B3SepoliaAppRegistryContractAddress,
-  B3SepoliaPointIndexerURL,
-  B3SepoliaPointServiceContractAddress,
-} from "../../constants";
+import { b3SepoliaConfig } from "../../config";
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -19,15 +14,16 @@ const appModeratorPrivateKey =
   `0x${process.env.MODERATOR_PRIVATE_KEY}` || `{0x}`;
 const b3AdminPrivateKey = `0x${process.env.B3_ADMIN_PRIVATE_KEY}` || `{0x}`;
 
+const chainConfig = b3SepoliaConfig;
 const registry = new AppRegistry(
-  B3SepoliaPointIndexerURL,
-  B3SepoliaAppRegistryContractAddress,
-  b3Sepolia,
+  chainConfig.indexerUrl,
+  chainConfig.appRegistryContractAddress,
+  chainConfig.chain
 );
 const bps = new BPS(
-  B3SepoliaPointIndexerURL,
-  B3SepoliaPointServiceContractAddress,
-  b3Sepolia,
+  chainConfig.indexerUrl,
+  chainConfig.pointServiceContractAddress,
+  chainConfig.chain
 );
 
 async function main(): Promise<void> {
@@ -38,7 +34,7 @@ async function main(): Promise<void> {
   let resp = await registry.register(
     "test.b3.fun",
     privateKeyToAccount(<Hex>appModeratorPrivateKey).address,
-    privateKeyToAccount(<Hex>appModeratorPrivateKey),
+    privateKeyToAccount(<Hex>appModeratorPrivateKey)
   );
   console.log("register-app:", resp);
 
@@ -60,7 +56,7 @@ async function main(): Promise<void> {
         point: 20n,
       },
     ],
-    privateKeyToAccount(<Hex>b3AdminPrivateKey),
+    privateKeyToAccount(<Hex>b3AdminPrivateKey)
   );
   console.log("grant-points:", resp);
 
@@ -73,7 +69,7 @@ async function main(): Promise<void> {
         point: 20n,
       },
     ],
-    privateKeyToAccount(<Hex>appModeratorPrivateKey),
+    privateKeyToAccount(<Hex>appModeratorPrivateKey)
   );
   console.log("transfer-points:", resp);
 
