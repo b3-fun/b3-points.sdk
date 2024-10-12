@@ -286,7 +286,7 @@ const response = await bps.aggregateUserPoints({
 });
 ```
 
-## List Point Transfers`
+## List Point Transfers
 Returns a list of point transfers. Optionally you can provide appId, session, user, status, rankings, and pagination arguments.
 
 ### Example
@@ -307,3 +307,38 @@ const response = await bps.listPointTransfers({
 
 ## Examples
 For full examples of each operation follow `src/example` folder
+
+## Transfer Points
+
+The `transfer-points.ts` file provides functionality to transfer points to multiple recipients using a CSV file. Here's how to use it:
+
+1. Prepare a CSV file with the following format:
+   ```
+   recipient_address,points_amount
+   0x1234...,100
+   0x5678...,200
+   ```
+   Save this file as `transfer-requests.csv` in the `src/example/bps/` directory.
+
+2. Set up your environment:
+   - Create a `.env` file in the project root.
+   - Add your moderator private key: `MODERATOR_PRIVATE_KEY=your_private_key_here`
+
+3. Configure the application:
+   - In the `distributePointsCsv` function, set the `appId` to your desired application ID.
+   - Adjust the `filePath` if your CSV file is located elsewhere.
+
+4. Run the script:
+   ```
+   npx ts-node src/example/bps/transfer-points.ts
+   ```
+
+5. Follow the prompts:
+   - The script will display information about the transfer requests.
+   - Confirm the transfer by entering 'y' when prompted.
+
+6. Monitor the output:
+   - The script will process transfers in batches of 100.
+   - It will display progress for each batch.
+
+Note: This script filters out recipients who have already received points in the current session to avoid duplicate transfers.
