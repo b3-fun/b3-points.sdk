@@ -57,7 +57,10 @@ export async function readTransferRequestsFromCsv(
     const transferRequests: TransferRequest[] = dataRows.map((row) => {
       const [recipientAddress, pointsAmount] = row.split(",");
       return {
-        recipient: recipientAddress.trim() as Address,
+        recipient: recipientAddress
+          .toLowerCase()
+          .trim()
+          .replace(/\n/g, "") as Address,
         point: BigInt(pointsAmount.trim()),
       };
     });
@@ -68,7 +71,13 @@ export async function readTransferRequestsFromCsv(
   }
 }
 
-export async function listReceivedRecipients(appId: bigint): Promise<string[]> {
+type ReceivedPoints = {
+  address: string;
+  points: bigint;
+};
+export async function listReceivedRecipients(
+  appId: bigint
+): Promise<ReceivedPoints[]> {
   const bps = new BPS(
     chainConfig.indexerUrl,
     chainConfig.pointServiceContractAddress,
@@ -79,7 +88,7 @@ export async function listReceivedRecipients(appId: bigint): Promise<string[]> {
   const currentSession = await bps.getCurrentSession();
   // call listPointTransfers until pagination is empty
   let pagination: Pagination = { pageNumber: 1, pageSize: 100 };
-  let receivedAddresses: string[] = [];
+  let receivedPoints: ReceivedPoints[] = [];
   while (true) {
     const options: ListPointTransfersOptions = {
       appId,
@@ -91,7 +100,10 @@ export async function listReceivedRecipients(appId: bigint): Promise<string[]> {
     };
     const response = await bps.listPointTransfers(options);
     response.results.forEach((transfer) => {
-      receivedAddresses.push(transfer.user.toLowerCase());
+      receivedPoints.push({
+        address: transfer.user.toLowerCase().trim().replace(/\n/g, ""),
+        points: BigInt(transfer.points.trim()),
+      });
     });
     const pageInfo = response.pageInfo;
     if (!pageInfo.hasNextPage) {
@@ -100,21 +112,34 @@ export async function listReceivedRecipients(appId: bigint): Promise<string[]> {
     pagination.pageNumber = (pagination.pageNumber ?? 0) + 1;
   }
 
-  return receivedAddresses;
+  return receivedPoints;
 }
 
 //----- function to transfer points from a csv file -----
 export async function transferPointsCsv(csvPath: string, appId: bigint) {
   const transferRequests = await readTransferRequestsFromCsv(csvPath);
-  const receivedAddresses = await listReceivedRecipients(appId);
-  console.log(`Number of received addresses: ${receivedAddresses.length}`);
-
-  const filteredTransferRequests = transferRequests.filter(
-    (request) => !receivedAddresses.includes(request.recipient.toLowerCase())
+  const receivedPoints = await listReceivedRecipients(appId);
+  console.log(
+    `Number of addresses already transferred points: ${receivedPoints.length}`
   );
 
   console.log(
-    `Number of transfer requests: ${transferRequests.length}, number of requests after filtered: ${filteredTransferRequests.length}`
+    `Number of points already transferred: ${receivedPoints.reduce(
+      (sum, point) => sum + point.points,
+      0n
+    )}`
+  );
+
+  console.log("--------------------------------");
+  const filteredTransferRequests = transferRequests.filter(
+    (request) =>
+      !receivedPoints.some(
+        (point) => point.address === request.recipient.toLowerCase()
+      )
+  );
+
+  console.log(
+    `Number of requests in csv: ${transferRequests.length}, number of requests after filtered: ${filteredTransferRequests.length}`
   );
 
   // sum number of points to transfer

@@ -19,10 +19,17 @@ import type {
   GetContractReturnType,
   Hex,
   PrivateKeyAccount,
+  PublicClient,
   WalletClient,
   WriteContractReturnType,
 } from "viem";
-import { createWalletClient, custom, getContract, http } from "viem";
+import {
+  createPublicClient,
+  createWalletClient,
+  custom,
+  getContract,
+  http,
+} from "viem";
 
 import { BPSContractABI } from "./contracts/BPS_ABI";
 import { fetchQuery } from "./services/indexer/fetcher";
@@ -45,11 +52,16 @@ export class BPS {
   >;
   private chain: Chain;
   private indexerEndpoint: string;
+  private publicClient: PublicClient;
 
   constructor(indexerURL: string, address: Hex, chain: Chain) {
     this.bpsContractAddress = address;
     this.chain = chain;
     this.indexerEndpoint = indexerURL;
+    this.publicClient = createPublicClient({
+      chain: this.chain,
+      transport: http(),
+    });
   }
 
   // Method overloads
@@ -85,9 +97,21 @@ export class BPS {
     requests: readonly TransferRequest[],
     account: PrivateKeyAccount | Address
   ): Promise<WriteContractReturnType> {
+    // read getTransactionCount of the account and put in nonce
+    let address: Address;
+    if (typeof account === "object" && "address" in account) {
+      address = account.address;
+    } else {
+      address = account;
+    }
+
+    const nonce = await this.publicClient.getTransactionCount({
+      address,
+    });
     return await this.bpsContract.write.transferPoints([appId, requests], {
       account,
       chain: this.chain,
+      nonce: nonce + 1,
     });
   }
 
