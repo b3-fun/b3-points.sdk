@@ -180,15 +180,3 @@ async function distributePoints() {
     console.error(error);
   }
 }
-
-async function distributePointsCsv() {
-  const appId = BigInt(5);
-  const filePath = "./src/example/bps/transfer-requests.csv";
-  try {
-    await transferPointsCsv(filePath, appId);
-  } catch (error) {
-    console.error(error);
-  }
-}
-// main: call the function to transfer points from a csv file
-void distributePointsCsv();
