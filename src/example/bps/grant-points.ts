@@ -6,6 +6,7 @@ import { privateKeyToAccount } from "viem/accounts";
 
 import { BPS } from "../../bps";
 import { b3SepoliaConfig } from "../../config";
+
 dotenv.config(); // Load environment variables from .env file
 
 const b3AdminPrivateKey: Hex =
@@ -16,7 +17,7 @@ export async function grantPoints(): Promise<string> {
   const bps = new BPS(
     chainConfig.indexerUrl,
     chainConfig.pointServiceContractAddress,
-    chainConfig.chain
+    chainConfig.chain,
   );
   bps.connect();
   const response = await bps.grantPoints(
@@ -26,7 +27,7 @@ export async function grantPoints(): Promise<string> {
         point: 20n,
       },
     ],
-    privateKeyToAccount(b3AdminPrivateKey)
+    privateKeyToAccount(b3AdminPrivateKey),
   );
   return response.toString();
 }
