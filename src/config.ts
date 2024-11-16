@@ -14,7 +14,7 @@ import {
   SepoliaENSResolverAddress,
 } from "./constants";
 
-interface Config {
+export interface Config {
   indexerUrl: string;
   pointServiceContractAddress: Address;
   chain: Chain;

@@ -8,7 +8,7 @@ import type { Address, Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 import { BPS } from "../../bps";
-import { b3SepoliaConfig } from "../../config";
+import { b3MainnetConfig, b3SepoliaConfig, Config } from "../../config";
 import type {
   ListPointTransfersOptions,
   Pagination,
@@ -18,7 +18,13 @@ import type {
 dotenv.config(); // Load environment variables from .env file
 
 // default to sepolia, switch to mainnet by changing the config to b3MainnetConfig
-const chainConfig = b3SepoliaConfig;
+let chainConfig: Config;
+if (process.env.CHAIN === "mainnet") {
+  chainConfig = b3MainnetConfig;
+} else {
+  chainConfig = b3SepoliaConfig;
+}
+
 console.log("connect to chain", chainConfig.chain.name);
 const appModeratorPrivateKey =
   `0x${process.env.MODERATOR_PRIVATE_KEY}` || `{0x}`;
