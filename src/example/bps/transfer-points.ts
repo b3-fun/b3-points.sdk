@@ -44,6 +44,7 @@ export async function transferPoints(
     transferRequests,
     privateKeyToAccount(<Hex>appModeratorPrivateKey)
   );
+
   return response.toString();
 }
 
@@ -122,15 +123,20 @@ export async function listReceivedRecipients(
 }
 
 //----- function to transfer points from a csv file -----
-export async function transferPointsCsv(csvPath: string, appId: bigint) {
+export async function transferPointsCsv(
+  csvPath: string,
+  appId: bigint,
+  batchSize: number
+) {
+  console.log(`Start transfer points from ${csvPath}, appId: ${appId}`);
   const transferRequests = await readTransferRequestsFromCsv(csvPath);
   const receivedPoints = await listReceivedRecipients(appId);
   console.log(
-    `Number of addresses already transferred points: ${receivedPoints.length}`
+    `Number of addresses already received points: ${receivedPoints.length}`
   );
 
   console.log(
-    `Number of points already transferred: ${receivedPoints.reduce(
+    `Number of distributed points: ${receivedPoints.reduce(
       (sum, point) => sum + point.points,
       0n
     )}`
@@ -180,9 +186,9 @@ export async function transferPointsCsv(csvPath: string, appId: bigint) {
     return;
   }
 
-  // now split the filtered transfer requests into chunks of 100
+  // now split the filtered transfer requests into chunks of batchSize
   const chunks = filteredTransferRequests.reduce((acc, curr, index) => {
-    const chunkIndex = Math.floor(index / 100);
+    const chunkIndex = Math.floor(index / batchSize);
     acc[chunkIndex] = [...(acc[chunkIndex] || []), curr];
     return acc;
   }, [] as TransferRequest[][]);
@@ -191,8 +197,10 @@ export async function transferPointsCsv(csvPath: string, appId: bigint) {
   // transfer points in chunks, sleep 5s between chunks to put in new block
   let batchNumber = 0;
   for (const chunk of chunks) {
-    await transferPoints(appId, chunk);
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    const response = await transferPoints(appId, chunk);
+    console.log("transferPoints tx hash", response);
+    // check if the tx is included in the chain
+
     console.log(`Transferred batch ${batchNumber + 1} of ${chunks.length}`);
     batchNumber++;
   }
@@ -200,7 +208,7 @@ export async function transferPointsCsv(csvPath: string, appId: bigint) {
 
 //----- function to distribute points -----
 async function distributePoints() {
-  const appId = 3n;
+  const appId = 5n;
   const transferRequests: TransferRequest[] = [
     { recipient: "0x6dae59FA42b8D81A9ad1FB7cF9b47de35040f6A3", point: 10n },
   ];

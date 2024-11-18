@@ -4,10 +4,12 @@ import { transferPointsCsv } from "./transfer-points";
 const appId = BigInt(5);
 // filePath is the path to the csv file
 const filePath = "./src/example/bps/transfer-requests.csv";
+// batchSize is the number of transfer requests per batch
+const batchSize = 50;
 
 async function distributePointsCsv() {
   try {
-    await transferPointsCsv(filePath, appId);
+    await transferPointsCsv(filePath, appId, batchSize);
   } catch (error) {
     console.error(error);
   }

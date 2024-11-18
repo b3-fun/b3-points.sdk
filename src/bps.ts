@@ -105,14 +105,32 @@ export class BPS {
       address = account;
     }
 
-    const nonce = await this.publicClient.getTransactionCount({
-      address,
-    });
-    return await this.bpsContract.write.transferPoints([appId, requests], {
-      account,
-      chain: this.chain,
-      nonce: nonce + 1,
-    });
+    const startTime = Date.now();
+    const txHash = await this.bpsContract.write.transferPoints(
+      [appId, requests],
+      {
+        account,
+        chain: this.chain,
+      }
+    );
+
+    console.log(`submit tx hash: ${txHash}, waiting for confirmation...`);
+    // wait for the tx to be included in the chain
+    let attempts = 0;
+    const maxAttempts = 10;
+    while (attempts < maxAttempts) {
+      if (await checkTxConfirmed(this.publicClient, txHash)) {
+        console.log(
+          `tx confirmed: ${txHash},  after ${(Date.now() - startTime) / 1000} seconds`
+        );
+        break;
+      }
+      attempts++;
+      // wait for 3 seconds
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+    }
+
+    return txHash;
   }
 
   public async cancelTransfer(
@@ -247,5 +265,22 @@ export class BPS {
 
   public async getCurrentSession(): Promise<bigint> {
     return await this.bpsContract.read.currentSession();
+  }
+}
+
+async function checkTxConfirmed(
+  publicClient: PublicClient,
+  txHash: string
+): Promise<boolean> {
+  try {
+    const receipt = await publicClient.getTransactionReceipt({
+      hash: <Hex>txHash,
+    });
+    if (receipt) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return false;
   }
 }
