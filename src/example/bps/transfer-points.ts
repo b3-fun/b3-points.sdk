@@ -19,13 +19,14 @@ dotenv.config(); // Load environment variables from .env file
 
 // default to sepolia, switch to mainnet by changing the config to b3MainnetConfig
 let chainConfig: Config;
-if (process.env.CHAIN === "mainnet") {
+if (process.env.ENV === "mainnet") {
   chainConfig = b3MainnetConfig;
+  console.log("connect to chain", b3MainnetConfig.chain.name);
 } else {
   chainConfig = b3SepoliaConfig;
+  console.log("connect to chain", b3SepoliaConfig.chain.name);
 }
 
-console.log("connect to chain", chainConfig.chain.name);
 const appModeratorPrivateKey =
   `0x${process.env.MODERATOR_PRIVATE_KEY}` || `{0x}`;
 
