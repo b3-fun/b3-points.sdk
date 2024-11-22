@@ -97,14 +97,6 @@ export class BPS {
     requests: readonly TransferRequest[],
     account: PrivateKeyAccount | Address
   ): Promise<WriteContractReturnType> {
-    // read getTransactionCount of the account and put in nonce
-    let address: Address;
-    if (typeof account === "object" && "address" in account) {
-      address = account.address;
-    } else {
-      address = account;
-    }
-
     const startTime = Date.now();
     const txHash = await this.bpsContract.write.transferPoints(
       [appId, requests],
@@ -137,10 +129,29 @@ export class BPS {
     uid: Hex,
     account: PrivateKeyAccount | Address
   ): Promise<WriteContractReturnType> {
-    return await this.bpsContract.write.cancelTransfer([uid], {
+    const startTime = Date.now();
+    const txHash = await this.bpsContract.write.cancelTransfer([uid], {
       account,
       chain: this.chain,
     });
+    console.log(`submit tx hash: ${txHash}, waiting for confirmation...`);
+
+    // wait for the tx to be included in the chain
+    let attempts = 0;
+    const maxAttempts = 10;
+    while (attempts < maxAttempts) {
+      if (await checkTxConfirmed(this.publicClient, txHash)) {
+        console.log(
+          `tx confirmed: ${txHash},  after ${(Date.now() - startTime) / 1000} seconds`
+        );
+        break;
+      }
+      attempts++;
+      // wait for 3 seconds
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+    }
+
+    return txHash;
   }
 
   public async advanceSession(
